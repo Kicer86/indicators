@@ -131,7 +131,7 @@ public:
     print_progress();
   }
 
-  bool is_completed() { return get_value<details::ProgressBarOption::completed>(); }
+  bool is_completed() const { return get_value<details::ProgressBarOption::completed>(); }
 
   void mark_as_completed() {
     get_value<details::ProgressBarOption::completed>() = true;

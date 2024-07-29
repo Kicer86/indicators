@@ -94,6 +94,7 @@ enum class ProgressBarOption {
   spinner_states,
   font_styles,
   hide_bar_when_complete,
+  move_active_down,
   min_progress,
   max_progress,
   progress_type,
@@ -210,6 +211,8 @@ using SpinnerStates =
     details::Setting<std::vector<std::string>, details::ProgressBarOption::spinner_states>;
 using HideBarWhenComplete =
     details::BooleanSetting<details::ProgressBarOption::hide_bar_when_complete>;
+using MoveActiveDown =
+    details::BooleanSetting<details::ProgressBarOption::move_active_down>;
 using FontStyles =
     details::Setting<std::vector<FontStyle>, details::ProgressBarOption::font_styles>;
 using MinProgress = details::IntegerSetting<details::ProgressBarOption::min_progress>;

@@ -16,7 +16,7 @@
 namespace indicators {
 
 template <typename Indicator> class DynamicProgress {
-  using Settings = std::tuple<option::HideBarWhenComplete>;
+  using Settings = std::tuple<option::HideBarWhenComplete, option::MoveActiveDown>;
 
 public:
   template <typename... Indicators> explicit DynamicProgress(Indicators &&... bars) {
@@ -81,7 +81,7 @@ private:
 public:
   void print_progress() {
     std::lock_guard<std::mutex> lock{mutex_};
-    auto &hide_bar_when_complete = get_value<details::ProgressBarOption::hide_bar_when_complete>();
+    const auto &hide_bar_when_complete = get_value<details::ProgressBarOption::hide_bar_when_complete>();
     if (hide_bar_when_complete) {
       // Hide completed bars
       if (started_) {
@@ -103,9 +103,15 @@ public:
         started_ = true;
     } else {
       // Don't hide any bars
+      const auto &move_active_down = get_value<details::ProgressBarOption::move_active_down>();
+      std::vector<Indicator *> view;
+      std::transform(bars_.begin(), bars_.end(), std::back_inserter(view), [](const auto& bar) { return bar.get(); });
+      if (move_active_down)
+        std::stable_partition(view.begin(), view.end(), [](const auto bar) { return bar->is_completed(); });
+
       if (started_)
         move_up(static_cast<int>(total_count_));
-      for (auto &bar : bars_) {
+      for (auto &bar : view) {
         bar->print_progress(true);
         std::cout << "\n";
       }
